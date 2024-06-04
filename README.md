@@ -20,6 +20,17 @@ https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.2.4
 
 1. Crear una nueva migracion en /db/migrations
 
-2. Ejecutar ruby db/migrate.rb
+2. Ejecutar 
 
-*En caso de error, eliminar el archivo /db/app.db
+        ruby db/migrate.rb
+
+## Seeds
+
+1. Crear nuevos seeds en /db/seeds
+
+2. Ejecutar 
+
+        ruby db/seed.rb
+
+*En caso de error, eliminar el archivo /db/app.db*
+
