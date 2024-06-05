@@ -14,4 +14,11 @@ class Sesion < Sequel::Model(DB[:sesiones])
 end
 
 class Asistencia < Sequel::Model(DB[:asistencias])
+    many_to_one :usuario, key: :alumno_id
+    many_to_one :sesion
+end
+
+class Matricula < Sequel::Model(DB[:matriculas])
+    many_to_one :usuario, key: :alumno_id
+    many_to_one :seccion, key: :seccion_id
 end
