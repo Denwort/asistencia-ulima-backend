@@ -6,7 +6,6 @@ get '/cursos/usuario' do
       data: ''
     }
     usuario_id = params[:usuario_id]
-    rol = params[:rol]
 
   
     # Acceso a la base de datos
@@ -14,7 +13,7 @@ get '/cursos/usuario' do
       # Para saber si es rol alumno o profesor
       query2 = <<-STRING
         SELECT rol FROM usuarios
-        WHERE id = '#{rol}'
+        WHERE id = '#{usuario_id}'
       STRING
   
       resultRol = DB[query2].first
@@ -67,8 +66,8 @@ get '/cursos/usuario' do
             cursos_profesor = result2.map do |row|
               {
                 profesor_id: row[:id],
-                curso_nombre: row[:curso_nombre],
-                seccion_codigo: row[:seccion_codigo]
+                curso_nombre: row[:nombre],
+                seccion_codigo: row[:codigo]
               }
             end
             resp[:message] = 'Cursos del profesor obtenidos correctamente.'
