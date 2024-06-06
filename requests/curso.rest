@@ -1,5 +1,7 @@
-############################################
+################CASO ALUMNO#####################
 GET http://127.0.0.1:4567/cursos/usuario
     ?usuario_id=3
 
-## Universidad ->  Biblioteca: 10.129.165.28
+################CASO PROFESOR#####################
+GET http://127.0.0.1:4567/cursos/usuario
+    ?usuario_id=1
