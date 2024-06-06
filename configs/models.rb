@@ -9,7 +9,6 @@ class Seccion < Sequel::Model(:secciones)
     many_to_one :periodos, key: :periodo_id
     many_to_one :cursos, key: :curso_id
     one_to_many :sesiones
-    
 end
 
 class Sesion < Sequel::Model(DB[:sesiones])

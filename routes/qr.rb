@@ -28,33 +28,29 @@ end
 
 get '/qr/alumno' do
 
+    sesion_id = params[:sesion_id].to_i
     alumno_id = params[:alumno_id].to_i
 
-    puts "Recibido alumno_id: #{alumno_id}"
+    puts "Recibido sesion_id: #{sesion_id}, alumno_id: #{alumno_id}"
 
-    # Obtener las secciones del profesor
-    asistencias = Asistencia.where(alumno_id: alumno_id)
+    # Buscar la asistencia correspondiente
+    asistencia = Asistencia.where(sesion_id: sesion_id, alumno_id: alumno_id).first
 
-    # Obtener la sesión actual según la fecha de inicio
-    sesion_actual = nil
-    asistencia_actual = nil
-    asistencias.each do |asistencia|
-        sesion_actual = Sesion.join(:secciones, :secciones__id => :sesiones__seccion_id)
-                              .where{ fechaInicio <= Time.now }
-                              .where{ fechaFin >= Time.now }
-                              .where(:secciones__id => asistencia.sesion.seccion_id)
-                              .order(:fechaInicio)
-                              .first
-        if sesion_actual
-            asistencia_actual = Asistencia.where(alumno_id: alumno_id, sesion_id: sesion_actual.id).first
-            break if asistencia_actual
+    if asistencia
+        sesion = asistencia.sesion
+        puts "Asistencia : id=#{asistencia.id}"
+        puts "Sesion : id=#{sesion.id}"
+        fecha_actual = Time.now
+        if sesion.fechaInicio <= fecha_actual && fecha_actual <= sesion.fechaFin
+            asistencia.update(asistio: true)
+            status 200
+            asistencia.to_json
+        else
+            status 400
+            { error: 'La fecha actual no está dentro del rango de fechas de la sesión' }.to_json
         end
-    end
-
-    if asistencia_actual
-        asistencia_actual.to_json
     else
         status 404
-        { error: 'No se encontró una sesión actual para el alumno' }.to_json
+        { error: 'No se encontró la asistencia para la sesión y alumno especificados' }.to_json
     end
 end
