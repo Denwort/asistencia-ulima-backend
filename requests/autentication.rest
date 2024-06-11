@@ -1,0 +1,9 @@
+#############################################
+POST  http://127.0.0.1:4567/login
+  ?usuario=profesor
+  &contrasenia=
+
+#############################################
+POST  http://127.0.0.1:4567/recuperar
+  ?usuario=profesor
+  &correo=pepe@ulima
