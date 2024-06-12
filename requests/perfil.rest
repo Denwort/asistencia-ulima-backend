@@ -1,0 +1,7 @@
+################ Prueba de Perfil de Usuario ################
+GET http://127.0.0.1:4567/usuario/perfil
+    ?usuario_id=3
+
+################ Prueba de Usuario no Encontrado ################
+GET http://127.0.0.1:4567/usuario/perfil
+    ?usuario_id=9999
