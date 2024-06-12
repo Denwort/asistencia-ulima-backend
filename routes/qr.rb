@@ -3,22 +3,15 @@ get '/qr/profesor' do
     profesor_id = params[:profesor_id].to_i
 
     puts "Recibido profesor_id: #{profesor_id}"
-
-    # Obtener las secciones del profesor
-    secciones = Seccion.where(profesor_id: profesor_id)
-
+    
     # Obtener la sesión actual según la fecha de inicio
-    sesion_actual = nil
-    secciones.each do |seccion|
-        sesion_actual = Sesion.where(seccion_id: seccion.id)
-                                .where{ fechaInicio <= Time.now }
-                                .where{ fechaFin >= Time.now }
-                                .order(:fechaInicio)
-                                .first
-        break if sesion_actual
-    end
+    sesion_actual = DB.fetch("SELECT s.* FROM sesiones s
+                         JOIN secciones se ON s.seccion_id = se.id
+                         WHERE se.profesor_id = ? AND s.fechaInicio <= ? AND s.fechaFin >= ?
+                         LIMIT 1", profesor_id, Time.now, Time.now).first
 
     if sesion_actual
+        sesion_actual.update(registro: true)
         sesion_actual.to_json
     else
         status 404

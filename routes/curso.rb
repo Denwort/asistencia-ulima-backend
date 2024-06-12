@@ -17,9 +17,11 @@ get '/cursos/usuario' do
       STRING
   
       resultRol = DB[query2].first
+
+      periodo = PERIODO_ACTUAL
   
       if resultRol && resultRol[:rol] == "alumno"
-        # Realizar la consulta SQL con los JOIN y los campos requeridos
+        # Realizar la consulta SQL con los JOIN 
         queryCursosAlumnos = <<-STRING
           SELECT UAlum.id AS alumno_id, CUR.nombre AS curso_nombre, SEC.codigo AS seccion_codigo, SEC.profesor_id, UProf.nombres AS profesor_nombres, UProf.apellidos AS profesor_apellidos
           FROM matriculas M
@@ -27,7 +29,7 @@ get '/cursos/usuario' do
           INNER JOIN secciones SEC ON M.seccion_id = SEC.id
           INNER JOIN cursos CUR ON SEC.curso_id = CUR.id
           INNER JOIN usuarios UProf ON UProf.id = SEC.profesor_id
-          WHERE UAlum.id = '#{usuario_id}'
+          WHERE UAlum.id = '#{usuario_id}' AND SEC.periodo_id = '#{periodo}'
         STRING
   
         result = DB[queryCursosAlumnos].all
@@ -55,7 +57,7 @@ get '/cursos/usuario' do
         queryCursosProfe = <<-STRING
             SELECT U.id, C.nombre, SEC.codigo FROM secciones SEC 
             INNER JOIN usuarios U ON SEC.profesor_id = U.id
-            INNER JOIN cursos C ON SEC.curso_id = C.id WHERE U.id = '#{usuario_id}';
+            INNER JOIN cursos C ON SEC.curso_id = C.id WHERE U.id = '#{usuario_id}' AND SEC.periodo_id = '#{periodo}'
         STRING
 
         result2 = DB[queryCursosProfe].all
