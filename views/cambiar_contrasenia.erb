@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cambiar Contraseña</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+      padding: 20px;
+    }
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #fff;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      color: #555;
+    }
+    input[type="text"],
+    input[type="password"] {
+      width: 100%;
+      padding: 8px;
+      margin: 5px 0 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    input[type="submit"] {
+      width: 100%;
+      padding: 10px;
+      background-color: #28a745;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    input[type="submit"]:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Cambiar Contraseña</h1>
+    <form id="formCambiarContrasenia" action="/cambiar_contrasenia" method="POST">
+    <label for="usuario">Usuario</label>
+    <input type="text" id="usuario" name="usuario" required>
+    
+    <label for="nueva_contrasenia">Nueva Contraseña</label>
+    <input type="password" id="nueva_contrasenia" name="nueva_contrasenia" required>
+    
+    <input type="submit" value="Cambiar Contraseña">
+  </form>
+  </div>
+
+  <script>
+    document.getElementById('formCambiarContrasenia').addEventListener('submit', function(event) {
+      event.preventDefault(); 
+
+      var usuario = document.getElementById('usuario').value;
+      var nuevaContrasenia = document.getElementById('nueva_contrasenia').value;
+
+      var xhr = new XMLHttpRequest();
+      xhr.open('POST', '/cambiar_contrasenia', true);
+      xhr.setRequestHeader('Content-Type', 'application/json');
+
+      xhr.onreadystatechange = function() {
+        if (xhr.readyState === XMLHttpRequest.DONE) {
+          var response = JSON.parse(xhr.responseText);
+          if (xhr.status === 200) {
+            alert(response.message); 
+          } else {
+            alert(response.message); 
+          }
+        }
+      };
+
+      var data = JSON.stringify({ usuario: usuario, nueva_contrasenia: nuevaContrasenia });
+      xhr.send(data);
+    });
+  </script>
+</body>
+</html>

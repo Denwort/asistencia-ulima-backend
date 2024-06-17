@@ -10,6 +10,10 @@ https://github.com/oneclick/rubyinstaller2/releases/download/RubyInstaller-3.2.4
 
 3. Instalar dependencias
 
+        Si te da error haz:
+
+                gem install mail
+
         bundler install
 
 4. Ejecutar la aplicación

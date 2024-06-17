@@ -3,12 +3,28 @@ GEM
   specs:
     base64 (0.2.0)
     bigdecimal (3.1.8)
+    date (3.3.4)
     ffi (1.16.3-x64-mingw-ucrt)
     listen (3.9.0)
       rb-fsevent (~> 0.10, >= 0.10.3)
       rb-inotify (~> 0.9, >= 0.9.10)
+    mail (2.8.1)
+      mini_mime (>= 0.1.1)
+      net-imap
+      net-pop
+      net-smtp
+    mini_mime (1.1.5)
     mustermann (3.0.0)
       ruby2_keywords (~> 0.0.1)
+    net-imap (0.4.13)
+      date
+      net-protocol
+    net-pop (0.1.2)
+      net-protocol
+    net-protocol (0.2.2)
+      timeout
+    net-smtp (0.5.0)
+      net-protocol
     rack (3.0.11)
     rack-protection (4.0.0)
       base64 (>= 0.1.0)
@@ -34,12 +50,14 @@ GEM
       tilt (~> 2.0)
     sqlite3 (2.0.2-x64-mingw-ucrt)
     tilt (2.3.0)
+    timeout (0.4.1)
     webrick (1.8.1)
 
 PLATFORMS
   x64-mingw-ucrt
 
 DEPENDENCIES
+  mail (~> 2.8, >= 2.8.1)
   rackup
   rerun
   sequel (~> 5.79.0)

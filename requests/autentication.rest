@@ -6,4 +6,9 @@ POST  http://127.0.0.1:4567/login
 #############################################
 POST  http://127.0.0.1:4567/recuperar
   ?usuario=profesor
-  &correo=pepe@ulima
+  &correo=piero.rozas.2912@gmail.com
+
+#############################################
+POST  http://127.0.0.1:4567/cambiar_contrasenia
+  ?usuario=profesor
+  &n_contrasenia=
