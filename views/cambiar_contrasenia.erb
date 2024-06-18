@@ -26,7 +26,6 @@
       margin: 10px 0 5px;
       color: #555;
     }
-    input[type="text"],
     input[type="password"] {
       width: 100%;
       padding: 8px;
@@ -53,14 +52,13 @@
   <div class="container">
     <h1>Cambiar Contraseña</h1>
     <form id="formCambiarContrasenia" action="/cambiar_contrasenia" method="POST">
-    <label for="usuario">Usuario</label>
-    <input type="text" id="usuario" name="usuario" required>
-    
-    <label for="nueva_contrasenia">Nueva Contraseña</label>
-    <input type="password" id="nueva_contrasenia" name="nueva_contrasenia" required>
-    
-    <input type="submit" value="Cambiar Contraseña">
-  </form>
+      <input type="hidden" id="usuario" name="usuario" value="<%= @usuario %>">
+      
+      <label for="nueva_contrasenia">Nueva Contraseña</label>
+      <input type="password" id="nueva_contrasenia" name="nueva_contrasenia" required>
+      
+      <input type="submit" value="Cambiar Contraseña">
+    </form>
   </div>
 
   <script>
