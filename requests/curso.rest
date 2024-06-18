@@ -1,7 +1,8 @@
-################CASO ALUMNO#####################
-GET http://127.0.0.1:4567/cursos/usuario
+
+###############CASO ALUMNO#######################
+GET http://127.0.0.1:4567/curso/alumno
     ?usuario_id=3
 
-################CASO PROFESOR#####################
-GET http://127.0.0.1:4567/cursos/usuario
+###############CASO PROFESOR#####################
+GET http://127.0.0.1:4567/curso/profesor
     ?usuario_id=1

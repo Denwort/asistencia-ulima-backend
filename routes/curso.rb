@@ -1,27 +1,22 @@
-get '/cursos/usuario' do
-    # Parámetros
+
+get '/curso/alumno' do
     status = 500
     resp = {
       message: '',
       data: ''
     }
     usuario_id = params[:usuario_id]
-
   
-    # Acceso a la base de datos
     begin
-      # Para saber si es rol alumno o profesor
       query2 = <<-STRING
         SELECT rol FROM usuarios
         WHERE id = '#{usuario_id}'
       STRING
   
       resultRol = DB[query2].first
-
       periodo = PERIODO_ACTUAL
   
       if resultRol && resultRol[:rol] == "alumno"
-        # Realizar la consulta SQL con los JOIN 
         queryCursosAlumnos = <<-STRING
           SELECT UAlum.id AS alumno_id, CUR.nombre AS curso_nombre, SEC.codigo AS seccion_codigo, SEC.profesor_id, UProf.nombres AS profesor_nombres, UProf.apellidos AS profesor_apellidos
           FROM matriculas M
@@ -34,7 +29,6 @@ get '/cursos/usuario' do
   
         result = DB[queryCursosAlumnos].all
   
-        # Procesar los resultados
         if result.empty?
           resp[:message] = 'No se encontraron cursos para el alumno especificado.'
         else
@@ -53,29 +47,64 @@ get '/cursos/usuario' do
           status = 200
         end
       else
+        resp[:message] = 'El usuario no es un alumno.'
+        status = 404
+      end
+    rescue Sequel::DatabaseError => e
+      resp[:message] = 'Error al acceder a la base de datos.'
+      resp[:data] = e.message
+    rescue StandardError => e
+      resp[:message] = 'Error interno del servidor.'
+      resp[:data] = e.message
+    end
+    status status
+    resp.to_json
+  end
 
+
+get '/curso/profesor' do
+    status = 500
+    resp = {
+      message: '',
+      data: ''
+    }
+    usuario_id = params[:usuario_id]
+  
+    begin
+      query2 = <<-STRING
+        SELECT rol FROM usuarios
+        WHERE id = '#{usuario_id}'
+      STRING
+  
+      resultRol = DB[query2].first
+      periodo = PERIODO_ACTUAL
+  
+      if resultRol && resultRol[:rol] == "profesor"
         queryCursosProfe = <<-STRING
-            SELECT U.id, C.nombre, SEC.codigo FROM secciones SEC 
-            INNER JOIN usuarios U ON SEC.profesor_id = U.id
-            INNER JOIN cursos C ON SEC.curso_id = C.id WHERE U.id = '#{usuario_id}' AND SEC.periodo_id = '#{periodo}'
+          SELECT U.id, C.nombre, SEC.codigo FROM secciones SEC 
+          INNER JOIN usuarios U ON SEC.profesor_id = U.id
+          INNER JOIN cursos C ON SEC.curso_id = C.id WHERE U.id = '#{usuario_id}' AND SEC.periodo_id = '#{periodo}'
         STRING
-
+  
         result2 = DB[queryCursosProfe].all
-
+  
         if result2.empty?
-            resp[:message] = 'No se encontraron cursos para el profesor especificado.'
-          else
-            cursos_profesor = result2.map do |row|
-              {
-                profesor_id: row[:id],
-                curso_nombre: row[:nombre],
-                seccion_codigo: row[:codigo]
-              }
-            end
-            resp[:message] = 'Cursos del profesor obtenidos correctamente.'
-            resp[:data] = cursos_profesor
-            status = 200
+          resp[:message] = 'No se encontraron cursos para el profesor especificado.'
+        else
+          cursos_profesor = result2.map do |row|
+            {
+              profesor_id: row[:id],
+              curso_nombre: row[:nombre],
+              seccion_codigo: row[:codigo]
+            }
           end
+          resp[:message] = 'Cursos del profesor obtenidos correctamente.'
+          resp[:data] = cursos_profesor
+          status = 200
+        end
+      else
+        resp[:message] = 'El usuario no es un profesor.'
+        status = 404
       end
     rescue Sequel::DatabaseError => e
       resp[:message] = 'Error al acceder a la base de datos.'
@@ -85,7 +114,6 @@ get '/cursos/usuario' do
       resp[:data] = e.message
     end
   
-    # Respuesta
     status status
     resp.to_json
   end
