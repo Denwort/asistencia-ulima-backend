@@ -7,8 +7,9 @@ Sequel.migration do
       String :rol, null: false
       String :nombres, null: false
       String :apellidos, null: false
-      DateTime :created_at
-      DateTime :updated_at
+      String :correo, null: false
+      DateTime :created_at, null: false, default: Sequel::CURRENT_TIMESTAMP
+      DateTime :updated_at, null: false, default: Sequel::CURRENT_TIMESTAMP
     end
   end
 end

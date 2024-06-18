@@ -3,115 +3,28 @@ require 'sequel'
 
 DB = Sequel.sqlite('db/app.db')
 
-asistencias_data = [
-  {
-    asistio: false,
-    alumno_id: DB[:usuarios].where(usuario: 'alumno').first[:id],
-    sesion_id: DB[:sesiones].where(fechaInicio: DateTime.new(2024, 5, 23, 7)).first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: false,
-    alumno_id: DB[:usuarios].where(usuario: 'alumno').first[:id],
-    sesion_id: DB[:sesiones].where(fechaInicio: DateTime.new(2024, 5, 24, 7)).first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    alumno_id: DB[:usuarios].where(usuario: 'alumno').first[:id],
-    sesion_id: DB[:sesiones].where(fechaInicio: DateTime.new(2024, 5, 28, 7)).first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    alumno_id: DB[:usuarios].where(usuario: 'alumno').first[:id],
-    sesion_id: DB[:sesiones].where(fechaInicio: DateTime.new(2024, 5, 31, 7)).first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: false,
-    alumno_id: DB[:usuarios].where(usuario: 'alumno').first[:id],
-    sesion_id: DB[:sesiones].where(fechaInicio: DateTime.new(2024, 5, 29, 16)).first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    alumno_id: DB[:usuarios].where(usuario: 'alumno').first[:id],
-    sesion_id: DB[:sesiones].where(fechaInicio: DateTime.new(2024, 5, 31, 11)).first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    alumno_id: DB[:usuarios].where(usuario: 'alumno').first[:id],
-    sesion_id: DB[:sesiones].where(fechaInicio: DateTime.new(2024, 5, 22, 14)).first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: false,
-    alumno_id: DB[:usuarios].where(usuario: 'alumno').first[:id],
-    sesion_id: DB[:sesiones].where(fechaInicio: DateTime.new(2024, 5, 25, 14)).first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    alumno_id: DB[:usuarios].where(usuario: 'alumno').first[:id],
-    sesion_id: DB[:sesiones].where(fechaInicio: DateTime.new(2024, 5, 29, 14)).first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    alumno_id: DB[:usuarios].where(usuario: 'alumno2').first[:id],
-    sesion_id: DB[:sesiones].where(fechaInicio: DateTime.new(2024, 5, 23, 7)).first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    alumno_id: DB[:usuarios].where(usuario: 'alumno2').first[:id],
-    sesion_id: DB[:sesiones].where(fechaInicio: DateTime.new(2024, 5, 24, 7)).first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: false,
-    alumno_id: DB[:usuarios].where(usuario: 'alumno2').first[:id],
-    sesion_id: DB[:sesiones].where(fechaInicio: DateTime.new(2024, 5, 28, 7)).first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    alumno_id: DB[:usuarios].where(usuario: 'alumno2').first[:id],
-    sesion_id: DB[:sesiones].where(fechaInicio: DateTime.new(2024, 5, 31, 7)).first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    alumno_id: DB[:usuarios].where(usuario: 'alumno2').first[:id],
-    sesion_id: DB[:sesiones].where(fechaInicio: DateTime.new(2024, 5, 29, 16)).first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: false,
-    alumno_id: DB[:usuarios].where(usuario: 'alumno2').first[:id],
-    sesion_id: DB[:sesiones].where(fechaInicio: DateTime.new(2024, 5, 31, 11)).first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  }
-]
+def generar_asistencias(usuario)
+  alumno_id = DB[:usuarios].where(usuario: usuario).first[:id]
+  secciones_ids = DB[:matriculas].where(alumno_id: alumno_id).select(:seccion_id).map(:seccion_id)
+  asistencias_data = []
+  secciones_ids.each do |seccion_id|
+    sesiones = DB[:sesiones].where(seccion_id: seccion_id).all
+    sesiones.each do |sesion|
+      asistencias_data << {
+        asistio: false,
+        alumno_id: alumno_id,
+        sesion_id: sesion[:id]
+      }
+    end
+  end
+  asistencias_data
+end
 
-asistencias_data.each do |asistencia|
+asistencias = []
+asistencias.concat(generar_asistencias('alumno'))
+asistencias.concat(generar_asistencias('alumno2'))
+
+asistencias.each do |asistencia|
   DB[:asistencias].insert(asistencia)
 end
 

@@ -13,7 +13,8 @@ get '/usuario/perfil' do
       usuario: usuario.usuario,
       rol: usuario.rol,
       nombres: usuario.nombres,
-      apellidos: usuario.apellidos
+      apellidos: usuario.apellidos,
+      correo: usuario.correo
     }.to_json
   else
     status 404

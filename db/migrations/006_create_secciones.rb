@@ -6,8 +6,8 @@ Sequel.migration do
       foreign_key :periodo_id, :periodos, null: false, on_delete: :cascade
       foreign_key :curso_id, :cursos, null: false, on_delete: :cascade
       foreign_key :profesor_id, :usuarios, null: false, on_delete: :cascade
-      DateTime :created_at
-      DateTime :updated_at
+      DateTime :created_at, null: false, default: Sequel::CURRENT_TIMESTAMP
+      DateTime :updated_at, null: false, default: Sequel::CURRENT_TIMESTAMP
     end
   end
 end

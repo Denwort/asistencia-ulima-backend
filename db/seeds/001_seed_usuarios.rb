@@ -9,8 +9,7 @@ usuarios_data = [
     rol: 'profesor',
     nombres: 'Pepe',
     apellidos: 'Valdivia',
-    created_at: Time.now,
-    updated_at: Time.now
+    correo: 'pepe@gmail.com'
   },
   {
     usuario: 'profesor2',
@@ -18,8 +17,7 @@ usuarios_data = [
     rol: 'profesor',
     nombres: 'Hernan',
     apellidos: 'Nina',
-    created_at: Time.now,
-    updated_at: Time.now
+    correo: 'nina@gmail.com'
   },
   {
     usuario: 'alumno',
@@ -27,8 +25,7 @@ usuarios_data = [
     rol: 'alumno',
     nombres: 'Mateo',
     apellidos: 'Alvarez',
-    created_at: Time.now,
-    updated_at: Time.now
+    correo: '20212407@aloe.ulima.edu.pe'
   },
   {
     usuario: 'alumno2',
@@ -36,8 +33,7 @@ usuarios_data = [
     rol: 'alumno',
     nombres: 'Cliff',
     apellidos: 'de la Cruz',
-    created_at: Time.now,
-    updated_at: Time.now
+    correo: 'cliff@gmail.com'
   }
 ]
 

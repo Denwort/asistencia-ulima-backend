@@ -2,82 +2,49 @@ require 'sequel'
 
 DB = Sequel.sqlite('db/app.db')
 
-sesiones_data = [
-  {
-    asistio: true,
-    fechaInicio: DateTime.new(2024, 5, 23, 7),
-    fechaFin: DateTime.new(2024, 5, 23, 9),
-    seccion_id: DB[:secciones].where(codigo: '830').first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    fechaInicio: DateTime.new(2024, 5, 24, 7),
-    fechaFin: DateTime.new(2024, 5, 24, 10),
-    seccion_id: DB[:secciones].where(codigo: '830').first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    fechaInicio: DateTime.new(2024, 5, 28, 7),
-    fechaFin: DateTime.new(2024, 5, 28, 9),
-    seccion_id: DB[:secciones].where(codigo: '830').first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    fechaInicio: DateTime.new(2024, 5, 31, 7),
-    fechaFin: DateTime.new(2024, 5, 31, 10),
-    seccion_id: DB[:secciones].where(codigo: '830').first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    fechaInicio: DateTime.new(2024, 5, 29, 16),
-    fechaFin: DateTime.new(2024, 5, 29, 18),
-    seccion_id: DB[:secciones].where(codigo: '833').first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    fechaInicio: DateTime.new(2024, 5, 31, 11),
-    fechaFin: DateTime.new(2024, 5, 31, 13),
-    seccion_id: DB[:secciones].where(codigo: '833').first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    fechaInicio: DateTime.new(2024, 5, 22, 14),
-    fechaFin: DateTime.new(2024, 5, 22, 16),
-    seccion_id: DB[:secciones].where(codigo: '831').first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    fechaInicio: DateTime.new(2024, 5, 25, 14),
-    fechaFin: DateTime.new(2024, 5, 25, 17),
-    seccion_id: DB[:secciones].where(codigo: '831').first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  },
-  {
-    asistio: true,
-    fechaInicio: DateTime.new(2024, 5, 29, 14),
-    fechaFin: DateTime.new(2024, 5, 29, 16),
-    seccion_id: DB[:secciones].where(codigo: '831').first[:id],
-    created_at: Time.now,
-    updated_at: Time.now
-  }
-]
+def generar_sesiones(seccion_codigo, fechas)
+  seccion_id = DB[:secciones].where(codigo: seccion_codigo).first[:id]
 
-sesiones_data.each do |sesion|
+  def generar_fechas(inicio, fin, seccion_id, intervalo_dias, repeticiones)
+    sesiones = []
+    16.times do
+      sesiones << {
+        registro: false,
+        fechaInicio: inicio,
+        fechaFin: fin,
+        seccion_id: seccion_id
+      }
+      inicio += intervalo_dias
+      fin += intervalo_dias
+    end
+    sesiones
+  end
+
+  sesiones_repetidas = []
+  fechas.each do |fecha|
+    inicio, fin = fecha
+    intervalo_dias = (fin - inicio).to_i == 0 ? 7 : fin - inicio
+    sesiones = generar_fechas(inicio, fin, seccion_id, intervalo_dias, 16)
+    sesiones_repetidas.concat(sesiones)
+  end
+  sesiones_repetidas
+end
+
+sesiones = []
+sesiones.concat(generar_sesiones('830', [
+  [DateTime.new(2024, 4, 2, 7), DateTime.new(2024, 4, 2, 9)],
+  [DateTime.new(2024, 4, 5, 7), DateTime.new(2024, 4, 5, 10)]
+]))
+sesiones.concat(generar_sesiones('833', [
+  [DateTime.new(2024, 4, 2, 16), DateTime.new(2024, 4, 2, 18)],
+  [DateTime.new(2024, 4, 4, 14), DateTime.new(2024, 4, 4, 17)]
+]))
+sesiones.concat(generar_sesiones('831', [
+  [DateTime.new(2024, 4, 1, 14), DateTime.new(2024, 4, 1, 17)],
+  [DateTime.new(2024, 4, 3, 14), DateTime.new(2024, 4, 3, 17)]
+]))
+
+sesiones.each do |sesion|
   DB[:sesiones].insert(sesion)
 end
 
