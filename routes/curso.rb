@@ -18,7 +18,7 @@ get '/curso/alumno' do
   
       if resultRol && resultRol[:rol] == "alumno"
         queryCursosAlumnos = <<-STRING
-          SELECT UAlum.id AS alumno_id, CUR.nombre AS curso_nombre, SEC.codigo AS seccion_codigo, SEC.profesor_id, UProf.nombres AS profesor_nombres, UProf.apellidos AS profesor_apellidos
+          SELECT UAlum.id AS alumno_id, CUR.nombre AS curso_nombre, SEC.codigo AS seccion_codigo,CUR.color AS color, SEC.profesor_id, UProf.nombres AS profesor_nombres, UProf.apellidos AS profesor_apellidos
           FROM matriculas M
           INNER JOIN usuarios UAlum ON M.alumno_id = UAlum.id
           INNER JOIN secciones SEC ON M.seccion_id = SEC.id
@@ -39,7 +39,8 @@ get '/curso/alumno' do
               seccion_codigo: row[:seccion_codigo],
               profesor_id: row[:profesor_id],
               profesor_nombres: row[:profesor_nombres],
-              profesor_apellidos: row[:profesor_apellidos]
+              profesor_apellidos: row[:profesor_apellidos],
+              color: row[:color]
             }
           end
           resp[:message] = 'Cursos del alumno obtenidos correctamente.'
@@ -81,7 +82,7 @@ get '/curso/profesor' do
   
       if resultRol && resultRol[:rol] == "profesor"
         queryCursosProfe = <<-STRING
-          SELECT U.id, C.nombre, SEC.codigo FROM secciones SEC 
+          SELECT U.id, C.nombre, SEC.codigo, C.color AS color FROM secciones SEC 
           INNER JOIN usuarios U ON SEC.profesor_id = U.id
           INNER JOIN cursos C ON SEC.curso_id = C.id WHERE U.id = '#{usuario_id}' AND SEC.periodo_id = '#{periodo}'
         STRING
@@ -95,7 +96,8 @@ get '/curso/profesor' do
             {
               profesor_id: row[:id],
               curso_nombre: row[:nombre],
-              seccion_codigo: row[:codigo]
+              seccion_codigo: row[:codigo],
+              color: row[:color]
             }
           end
           resp[:message] = 'Cursos del profesor obtenidos correctamente.'
