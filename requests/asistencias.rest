@@ -1,0 +1,14 @@
+#############################################
+GET  http://127.0.0.1:4567/profesor/sesiones
+  ?seccion_id=2
+
+
+#############################################
+GET  http://127.0.0.1:4567/profesor/asistencias
+  ?sesion_id=53
+
+#############################################
+POST http://127.0.0.1:4567/profesor/modificarAsistencia
+  ?asistencia_id=1
+  &asistio=true
+
