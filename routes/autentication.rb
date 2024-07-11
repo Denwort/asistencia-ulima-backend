@@ -14,10 +14,10 @@ Mail.defaults do
   }
 end
 
-post '/login' do
+get '/login' do
     usuario = params['usuario']
     contrasenia = params['contrasenia']
-  
+
     user = Usuario.where(usuario: usuario).first
     if user && user.contrasenia == contrasenia
       status 200
@@ -28,52 +28,55 @@ post '/login' do
     end
   end
 
-  post '/recuperar' do
-
-    usuario = params['usuario']
-    user = Usuario.where(usuario: usuario).first
-    
-    if user
-      correo = user.correo
-      Mail.deliver do
-        to correo
-        from 'pogmovil823@gmail.com'
-        subject 'Recuperación de contraseña'
-        body "Hola #{user.nombres},\n\nHemos recibido una solicitud para recuperar tu contraseña. Utiliza el siguiente enlace para restablecer tu contraseña:\n\nhttp://localhost:4567/cambiar_contrasenia?user_id=#{user.id}\n\nSi no solicitaste esta recuperación, por favor ignora este correo."
-      end
+get '/recuperar' do
+  usuario = params['usuario']
   
-      status 200
-      { message: "Se enviará la recuperación al correo #{correo}" }.to_json
-    else
-      status 401
-      { message: 'Usuario o correo incorrectos' }.to_json
+  puts "usuario:"
+  puts usuario
+  puts "xd:"
+
+  user = Usuario.where(usuario: usuario).first
+  if user
+    correo = user.correo
+    Mail.deliver do
+      to correo
+      from 'pogmovil823@gmail.com'
+      subject 'Recuperación de contraseña'
+      body "Hola #{user.nombres},\n\nHemos recibido una solicitud para recuperar tu contraseña. Utiliza el siguiente enlace para restablecer tu contraseña:\n\nhttp://localhost:4567/cambiar_contrasenia?user_id=#{user.id}\n\nSi no solicitaste esta recuperación, por favor ignora este correo."
     end
-  end
-
-  get '/cambiar_contrasenia' do
-    @usuario = params['user_id']
-    erb :cambiar_contrasenia
-  end
-
-  post '/cambiar_contrasenia' do
-
-    content_type :json
-    data = JSON.parse(request.body.read)
   
-    usuario = data['usuario']
-    nueva_contrasenia = data['nueva_contrasenia']
+    status 200
+    { message: "Se enviará la recuperación al correo #{correo}" }.to_json
+  else
+    status 401
+    { message: 'Usuario o correo incorrectos' }.to_json
+  end
+end
 
-    user = Usuario.where(id: usuario).first
+get '/cambiar_contrasenia' do
+  @usuario = params['user_id']
+  erb :cambiar_contrasenia
+end
+
+post '/cambiar_contrasenia' do
+
+  content_type :json
+  data = JSON.parse(request.body.read)
+  
+  usuario = data['usuario']
+  nueva_contrasenia = data['nueva_contrasenia']
+
+  user = Usuario.where(id: usuario).first
 
 
-    if user
-      user.update(contrasenia: nueva_contrasenia)
-      status 200
-      { message: 'Contraseña cambiada exitosamente' }.to_json
-    else
-      status 401
-      { message: 'Usuario no encontrado' }.to_json
-    end
+  if user
+    user.update(contrasenia: nueva_contrasenia)
+    status 200
+    { message: 'Contraseña cambiada exitosamente' }.to_json
+  else
+    status 401
+    { message: 'Usuario no encontrado' }.to_json
+  end
 
 end
 
