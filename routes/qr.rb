@@ -14,6 +14,7 @@ get '/qr/profesor' do
         sesion_actual.update(registro: true)
         sesion_actual.to_json
     else
+        puts "Sin sesion actual"
         status 404
         { error: 'No se encontró una sesión actual para el profesor' }.to_json
     end
