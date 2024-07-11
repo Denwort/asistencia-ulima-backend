@@ -21,7 +21,7 @@ usuarios_data = [
   },
   {
     usuario: 'alumno',
-    contrasenia: '',
+    contrasenia: '1',
     rol: 'alumno',
     nombres: 'Mateo',
     apellidos: 'Alvarez',

@@ -33,12 +33,11 @@ get '/qr/alumno' do
     if asistencia
         sesion = asistencia.sesion
         puts "Asistencia : id=#{asistencia.id}"
-        puts "Sesion : id=#{sesion.id}"
         fecha_actual = Time.now
         if sesion.fechaInicio <= fecha_actual && fecha_actual <= sesion.fechaFin
             asistencia.update(asistio: true)
             status 200
-            asistencia.to_json
+            asistencia.to_custom_json
         else
             status 400
             { error: 'La fecha actual no está dentro del rango de fechas de la sesión' }.to_json

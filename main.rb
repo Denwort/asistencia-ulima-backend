@@ -4,11 +4,7 @@ require 'sequel'
 set :public_folder, File.dirname(__FILE__) + '/public'
 set :views, File.dirname(__FILE__) + '/views'
 set :protection, except: :frame_options
-<<<<<<< HEAD
 set :bind, '192.168.1.47'
-=======
-set :bind, '192.168.1.11'
->>>>>>> 10d4adb9e1f236fe1d973473eabdce91ace806f8
 # modifique la ip
 set :port, 4567
 configure :development do
