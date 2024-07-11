@@ -1,9 +1,9 @@
 #############################################
-POST  http://127.0.0.1:4567/login
+GET  http://192.168.1.11:4567/login
   ?usuario=profesor
   &contrasenia=
 
 #############################################
-POST  http://127.0.0.1:4567/recuperar
+GET  http://192.168.1.11:4567/recuperar
   ?usuario=alumno
 
