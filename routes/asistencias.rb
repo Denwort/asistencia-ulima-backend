@@ -91,10 +91,6 @@ end
 
 get '/alumno/sesiones' do
   status = 500
-  resp = {
-    message: '',
-    data: ''
-  }
   usuario_id = params[:usuario_id]
   curso_id = params[:curso_id]
 
@@ -126,7 +122,7 @@ get '/alumno/sesiones' do
       result = DB[querySesiones].all
 
       if result.empty?
-        resp[:message] = 'No se encontraron sesiones para el curso especificado.'
+        { error: "No se encontraron sesiones para el curso especificado." }.to_json
       else
         sesiones = result.map do |row|
           {
@@ -136,22 +132,18 @@ get '/alumno/sesiones' do
             asistio: row[:asistio]
           }
         end
-        resp[:message] = 'Sesiones del curso obtenidas correctamente.'
-        resp[:data] = sesiones
         status = 200
+        sesiones.to_json
       end
     else
-      resp[:message] = 'El usuario no es un alumno o no existe.'
       status = 404
+      { error: "Usuario no es un alumno o no existe" }.to_json
     end
   rescue Sequel::DatabaseError => e
-    resp[:message] = 'Error al acceder a la base de datos.'
-    resp[:data] = e.message
+    status 500
+    { error: e.message }.to_json
   rescue StandardError => e
-    resp[:message] = 'Error interno del servidor.'
-    resp[:data] = e.message
+    status 500
+    { error: e.message }.to_json
   end
-
-  status status
-  resp.to_json
 end
