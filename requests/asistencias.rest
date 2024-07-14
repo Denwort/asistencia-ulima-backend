@@ -12,6 +12,6 @@ POST http://127.0.0.1:4567/profesor/modificarAsistencia
   &asistio=true
 
 #############################################
-GET http://127.0.0.1:4567/alumno/sesiones
+GET http://192.168.18.7:4567/alumno/sesiones
     ?usuario_id=3
-    &curso_id=2
+    &seccion_id=2

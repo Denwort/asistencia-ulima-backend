@@ -92,7 +92,7 @@ end
 get '/alumno/sesiones' do
   status = 500
   usuario_id = params[:usuario_id]
-  curso_id = params[:curso_id]
+  seccion_id = params[:seccion_id]
 
   begin
     # Verificar si el usuario es un alumno
@@ -103,7 +103,7 @@ get '/alumno/sesiones' do
     resultRol = DB[queryRol].first
 
     if resultRol && resultRol[:rol] == "alumno"
-      # Consulta para obtener las sesiones y la asistencia del alumno
+      # Consulta para obtener las sesiones y la asistencia del alumno basadas en la seccion_id
       querySesiones = <<-SQL
         SELECT 
           SES.id AS sesion_id,
@@ -111,18 +111,16 @@ get '/alumno/sesiones' do
           SES.fechaFin,
           COALESCE(A.asistio, 0) AS asistio
         FROM 
-          secciones SEC
-          INNER JOIN sesiones SES ON SEC.id = SES.seccion_id
+          sesiones SES
           LEFT JOIN asistencias A ON A.sesion_id = SES.id AND A.alumno_id = '#{usuario_id}'
         WHERE 
-          SEC.curso_id = '#{curso_id}' AND 
-          SEC.id IN (SELECT seccion_id FROM matriculas WHERE alumno_id = '#{usuario_id}')
+          SES.seccion_id = '#{seccion_id}'
       SQL
 
       result = DB[querySesiones].all
 
       if result.empty?
-        { error: "No se encontraron sesiones para el curso especificado." }.to_json
+        { error: "No se encontraron sesiones para la sección especificada." }.to_json
       else
         sesiones = result.map do |row|
           {
