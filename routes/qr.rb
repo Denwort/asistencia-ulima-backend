@@ -5,14 +5,26 @@ get '/qr/profesor' do
     puts "Recibido profesor_id: #{profesor_id}"
     
     # Obtener la sesión actual según la fecha de inicio
-    sesion_actual = DB.fetch("SELECT s.* FROM sesiones s
-                         JOIN secciones se ON s.seccion_id = se.id
-                         WHERE se.profesor_id = ? AND s.fechaInicio <= ? AND s.fechaFin >= ?
-                         LIMIT 1", profesor_id, Time.now, Time.now).first
+    sesion_actual = Sesion
+        .join(:secciones, id: :seccion_id)
+        .where(Sequel[:secciones][:profesor_id] => profesor_id)
+        .where { fechaInicio <= Time.now }
+        .where { fechaFin >= Time.now }
+        .first
 
     if sesion_actual
         sesion_actual.update(registro: true)
-        sesion_actual.to_json
+        status 200
+        {
+            id: sesion_actual[:id],
+            registro: sesion_actual.registro,
+            fechaInicio: sesion_actual.fechaInicio,
+            fechaFin: sesion_actual.fechaFin,          
+            seccion_id: sesion_actual.seccion.id,
+            seccion_codigo: sesion_actual.seccion.codigo,
+            periodo: sesion_actual.seccion.periodo.nombre,
+            curso: sesion_actual.seccion.curso.nombre
+        }.to_json
     else
         puts "Sin sesion actual"
         status 404
@@ -37,7 +49,26 @@ get '/qr/alumno' do
         if sesion.fechaInicio <= fecha_actual && fecha_actual <= sesion.fechaFin
             asistencia.update(asistio: true)
             status 200
-            asistencia.to_custom_json
+            {
+                id: asistencia.id,
+                asistio: asistencia.asistio,
+                alumno: {
+                    id: asistencia.usuario.id,
+                    rol: asistencia.usuario.rol,
+                    nombres: asistencia.usuario.nombres,
+                    apellidos: asistencia.usuario.apellidos,
+                },
+                sesion: {
+                    id: asistencia.sesion.id,
+                    registro: asistencia.sesion.registro,
+                    fechaInicio: asistencia.sesion.fechaInicio,
+                    fechaFin: asistencia.sesion.fechaFin,          
+                    seccion_id: asistencia.sesion.seccion.id,
+                    seccion_codigo: asistencia.sesion.seccion.codigo,
+                    periodo: asistencia.sesion.seccion.periodo.nombre,
+                    curso: asistencia.sesion.seccion.curso.nombre
+                }
+            }.to_json
         else
             status 400
             { error: 'La fecha actual no está dentro del rango de fechas de la sesión' }.to_json
